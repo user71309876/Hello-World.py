@@ -1,0 +1,1 @@
+__all__=["vietnam","thailand"]#여기에 멀 공개할지 설정한다
