@@ -72,3 +72,9 @@ print(stu)
 
 #여기서 i.upper()은 변환될 값을 반환
 #for i in stu는 반복할 갯수를 반환
+
+list=list(range(1,11))
+print(list)
+list=[ [w,f] for w,f in list if f>5]
+print(list)
+#만약 f가 5이면 그 객체는 사라진다

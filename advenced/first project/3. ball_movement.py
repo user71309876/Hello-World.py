@@ -57,12 +57,29 @@ weapons=[]
 #무기 이동 속도
 weapon_speed=10
 
-balloon1=pg.image.load(os.path.join(image_path,"balloon1.png"))
-balloon2=pg.image.load(os.path.join(image_path,"balloon2.png"))
-balloon3=pg.image.load(os.path.join(image_path,"balloon3.png"))
-balloon4=pg.image.load(os.path.join(image_path,"balloon4.png"))
+#공 만들기(4개 크기에 대해 따로 처리)
+ball_images=[
+    pg.image.load(os.path.join(image_path,"balloon1.png")),
+    pg.image.load(os.path.join(image_path,"balloon2.png")),
+    pg.image.load(os.path.join(image_path,"balloon3.png")),
+    pg.image.load(os.path.join(image_path,"balloon4.png"))
+]
 
+#공 크기에 따른 최초 스피트
+ball_speed_y=[-18,-15,-12,-9]
 
+#공들
+balls=[]
+
+#최초 발생하는 큰 공 추가
+balls.append({
+    "pos_x":50, #공의 x 좌표, 여기서 시작한다 이말
+    "pos_y":50, #공의 y 좌표, 여기서 시작한다 이말
+    "img_idx":0, #공의 이미지 인덱스(여기선 balloon1)
+    "to_x":3, # x축 이동방향
+    "to_y":-6,# y축 이동방향
+    "init_spd_y":ball_speed_y[0] #y로 최초속도
+})
 
 #이벤트 루프
 running=True
@@ -82,6 +99,7 @@ while running:
                 weapon_x_pos=character_x_pos+character_width/2-weapon_width/2
                 weapon_y_pos=character_y_pos
                 weapons.append([weapon_x_pos,weapon_y_pos])
+                #총을 발사할때마다 weapon list에 weapon의 x,y 좌표가 캐릭터의 위치에 따라 찍힌다
                 
         if event.type==pg.KEYUP:
             if event.key==pg.K_a:
@@ -103,11 +121,51 @@ while running:
     
     #천장에 닿은 무기 없애기
     weapons=[[w[0],w[1]-weapon_speed] for w in weapons if w[1]>0]
+    #weapon의 항목 갯수만큼 반복함, weapon의 weapon_x_pos와 weapon_y_pos를 각각 w[0],과 w[1]에 넣음
+    #w[0]은 그데로, w[1]은 weapon_speed만큼 빼줌(weapon을 위로 올라가게 함)
+    #그리고 그 객체에 계산된 객체를 다시 넣어줌
+    #단, weapon의 y 좌표가 0이 될 때 그 리스트는 사라진다
+    
+    #공 위치 정의
+    for ball_idx, ball_val in enumerate(balls):#ball_idx는 lib의 key, ball_val는 lib의 value 넣음
+        ball_pos_x=ball_val["pos_x"]#공의 x 좌표
+        ball_pos_y=ball_val["pos_y"]#공의 y 좌표
+        ball_img_idx=ball_val["img_idx"]#공 번호
+        
+        ball_size=ball_images[ball_img_idx].get_rect().size#공의 사이즈 불러오기
+        ball_width=ball_size[0]#공의 넓이
+        ball_height=ball_size[1]#공의 높이
+        
+        #가로벽에 닿았을 때 공 이동 위치 변경(튕겨나오는 효과)
+        if ball_pos_x<0 or ball_pos_x>screen_width-ball_width:
+            ball_val["to_x"]=ball_val["to_x"]*-1#"to_x" value를 마이너스 해준다
+        
+        #스테이지에 튕겨서 올라가는 처리    
+        if ball_pos_y >=screen_hight-stage_height-ball_height:#바닥에 닿았을 경우
+            #ball_val["to_y"]=ball_val["init_spd_y"]#고정된 (-18)이라는 가속도를 넣음 근데 난 이게 싫어서
+            ball_val["to_y"]=ball_val["to_y"]*-1#작용,반작용으로 (-1)을 곱해줌
+        else:#그 외 모든 경우에는 속도를 증가함
+            ball_val["to_y"]+=0.5#밑으로 내려가니깐 +를 해줌
+            #처음에는 ball_val["to_y"]가 -6으로 나와서 위로 올라감
+        
+        ball_val["pos_x"]+=ball_val["to_x"]#현재 속도를 더해주는 모습
+        ball_val["pos_y"]+=ball_val["to_y"]
+        
+    
+    
+            
+        
         
     screen.blit(background,(0,0))#배경 호출
-    for weapon_x_pos,weapon_y_pos in weapons:
-        screen.blit(weapon,(weapon_x_pos,weapon_y_pos))
+    for weapon_x_pos,weapon_y_pos in weapons:#weapon list로부터 x,y좌표를 입력받아
+        screen.blit(weapon,(weapon_x_pos,weapon_y_pos))#출력시키는 모습
     screen.blit(background_hide,(background_hide_x_pos,background_hide_y_pos))
+    for idx, val in enumerate(balls):
+        ball_pos_x=val["pos_x"]
+        ball_pos_y=val["pos_y"]
+        ball_img_idx=val["img_idx"]
+        screen.blit(ball_images[ball_img_idx],(ball_pos_x,ball_pos_y))
+        #공 호출 해줍니다
     screen.blit(stage,(0,480-stage_height))#스테이지 호출
     screen.blit(character,(character_x_pos,character_y_pos))#스테이지 호출
     
