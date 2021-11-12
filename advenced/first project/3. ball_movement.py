@@ -63,6 +63,7 @@ balloon3=pg.image.load(os.path.join(image_path,"balloon3.png"))
 balloon4=pg.image.load(os.path.join(image_path,"balloon4.png"))
 
 
+
 #이벤트 루프
 running=True
 while running:
