@@ -447,8 +447,8 @@ while running:
 pg.quit()
 """
 남은 과업
-밑바닥 접촉 코드 만들기
 줄 없애는 코드 만들기
 (optional)점수 만들기
 (optional)단계 만들기
+자잘한 버그 고치기
 """
