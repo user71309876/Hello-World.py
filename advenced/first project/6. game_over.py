@@ -87,6 +87,8 @@ ball_to_remove=-1
 
 # font 정의
 game_font=pg.font.Font(None,40)
+
+
 total_time=100
 start_ticks=pg.time.get_ticks()#시작 시간 정의
 
