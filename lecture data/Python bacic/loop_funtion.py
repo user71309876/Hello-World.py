@@ -75,6 +75,6 @@ print(stu)
 
 list=list(range(1,11))
 print(list)
-list=[ [w,f] for w,f in list if f>5]
+list=[ f for f in list if f>5]
 print(list)
 #만약 f가 5이면 그 객체는 사라진다
