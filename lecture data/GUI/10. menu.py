@@ -36,7 +36,7 @@ menu_view=Menu(menu,tearoff=0)
 menu_view.add_checkbutton(label="Show Minimap")
 menu.add_cascade(label="View",menu=menu_view)
 
-
+menu.add_cascade(label="views")
 
 
 
